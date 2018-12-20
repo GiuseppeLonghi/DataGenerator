@@ -25,7 +25,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="7e6dd" class="javax.swing.JList" binding="mProductTypes">
+              <component id="7e6dd" class="javax.swing.JList" binding="mProductTypesJList">
                 <constraints/>
                 <properties/>
               </component>

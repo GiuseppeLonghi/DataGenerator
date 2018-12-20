@@ -8,34 +8,45 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class DataGenerator extends JFrame {
     private JPanel mMainPane;
     private JPanel mLeftPane;
     private JPanel mRightPane;
-    private JList mProductTypes;
+    private JList mProductTypesJList;
     private JTextPane mSelectedProductTypesTextPane;
     private JPanel mBottomPane;
     private JButton mCancel;
     private JButton mRemove;
     private JButton mOk;
+    Map<String, Integer> mProductTypesMap = new TreeMap<String, Integer>();
+
 
     public DataGenerator() {
-
         java.util.List<String> selectedItemList = new ArrayList<>();
         Document doc = mSelectedProductTypesTextPane.getDocument();
 
-        String[] productTypesArray = new String[]{"P4_1A_HR_____",
-                "P4_0__ACQ____",
-                "P4_0__HR_____",
-                "P4_0__LR_____",
-                "P4_0__CAL____",
-                "MW_0__AMR____",
-                "GN_0__GNS____"};
-        mProductTypes.setListData(productTypesArray);
+        // Fill in a map with info from resource file
+        try (Stream<String> lines = Files.lines(Paths.get("./resources/ListProductTypes.cnf"), StandardCharsets.UTF_8)) {
+            lines.forEach(line -> {
+               String[] tmp = line.split(":");
+               mProductTypesMap.put(tmp[0], Integer.valueOf(tmp[1]));
+                    });
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        mProductTypes.addMouseListener(new MouseAdapter() {
+        // Set content into the ProductTypes JList component
+        mProductTypesJList.setListData(mProductTypesMap.keySet().toArray());
+
+        mProductTypesJList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
