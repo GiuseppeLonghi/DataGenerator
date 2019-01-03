@@ -1,88 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.tools.dataGenerator.gui.DataGenerator">
-  <grid id="27dc6" binding="mMainPane" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="0" left="0" bottom="0" right="0"/>
+  <grid id="27dc6" binding="mMainPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
       <xy x="33" y="20" width="646" height="648"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="1da7e" binding="mLeftPane" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="97" height="24"/>
-          </grid>
-        </constraints>
+      <grid id="d23b4" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
         <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="5f327">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="7e6dd" class="javax.swing.JList" binding="mProductTypesJList">
-                <constraints/>
-                <properties/>
-              </component>
-            </children>
-          </scrollpane>
-        </children>
-      </grid>
-      <grid id="20888" binding="mRightPane" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="24" height="333"/>
-          </grid>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children>
-          <scrollpane id="444c">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="cd9eb" class="javax.swing.JTextPane" binding="mSelectedProductTypesTextPane">
-                <constraints/>
-                <properties/>
-              </component>
-            </children>
-          </scrollpane>
-        </children>
-      </grid>
-      <vspacer id="e81f0">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
-      <grid id="dbe0c" binding="mBottomPane" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
-        <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children>
-          <component id="a681a" class="javax.swing.JButton" binding="mOk">
+          <component id="5d1e6" class="javax.swing.JButton" binding="okBtn">
             <constraints/>
             <properties>
               <text value="OK"/>
             </properties>
           </component>
-          <component id="6d03c" class="javax.swing.JButton" binding="mRemove">
+          <component id="22766" class="javax.swing.JButton" binding="mRemoveBtn">
             <constraints/>
             <properties>
               <text value="Remove"/>
             </properties>
           </component>
-          <component id="5871a" class="javax.swing.JButton" binding="mCancel">
+          <component id="2cebd" class="javax.swing.JButton" binding="cancelBtn">
             <constraints/>
             <properties>
               <text value="Cancel"/>
@@ -90,6 +32,41 @@
           </component>
         </children>
       </grid>
+      <splitpane id="38688">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <scrollpane id="8f6d">
+            <constraints>
+              <splitpane position="left"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="3bb24" class="javax.swing.JList" binding="mProductTypesJList">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
+          </scrollpane>
+          <scrollpane id="17c98">
+            <constraints>
+              <splitpane position="right"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="a5b4b" class="javax.swing.JTextPane" binding="mSelectedProductTypesTextPane">
+                <constraints/>
+                <properties>
+                  <editable value="false"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
+      </splitpane>
     </children>
   </grid>
 </form>

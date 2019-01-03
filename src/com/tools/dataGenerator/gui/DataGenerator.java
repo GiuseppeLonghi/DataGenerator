@@ -17,14 +17,11 @@ import java.util.stream.Stream;
 
 public class DataGenerator extends JFrame {
     private JPanel mMainPane;
-    private JPanel mLeftPane;
-    private JPanel mRightPane;
+    private JButton okBtn;
+    private JButton cancelBtn;
+    private JButton mRemoveBtn;
     private JList mProductTypesJList;
     private JTextPane mSelectedProductTypesTextPane;
-    private JPanel mBottomPane;
-    private JButton mCancel;
-    private JButton mRemove;
-    private JButton mOk;
     Map<String, Integer> mProductTypesMap = new TreeMap<String, Integer>();
 
 
@@ -68,7 +65,7 @@ public class DataGenerator extends JFrame {
             }
         });
 
-        mRemove.addActionListener(new ActionListener() {
+        mRemoveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 //Remove last selected product type from the Selected item text pane
