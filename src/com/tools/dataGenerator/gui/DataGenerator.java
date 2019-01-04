@@ -2,18 +2,39 @@ package com.tools.dataGenerator.gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 public class DataGenerator extends JFrame {
     private static final int SIZE_MB = 1_000_000;
+    /**
+     * This Map will contain as key the data item name and as value the object representing the data item
+     */
+    static private Map<String, DataItem> mDataItemMap = new TreeMap<>();
+    /**
+     * This list contains the full list of Data Item displayed on the left part of the main Window
+     */
+    static private List<String> mSelectedItemsOnTheLeftList = new ArrayList<>();
+    /**
+     * This list contains the list of Data Item displayed on the right part of the main Window that have been
+     * selected. This list is used only to remove the items displayed on the right part of the main window and
+     * that have been selected for deletion
+     */
+    static private List<String> mSelectedItemsOnTheRightList = new ArrayList<>();
+    static private JFileChooser mFc;
     private JPanel mMainPane;
     private JButton mOkBtn;
     private JButton mCancelBtn;
@@ -27,25 +48,6 @@ public class DataGenerator extends JFrame {
     private JScrollPane mAllDataItemJScrollPane;
     private JScrollPane mSelectedDataItemScrollJPane;
 
-    /**
-     * This Map will contain as key the data item name and as value the object representing the data item
-     */
-    static private Map<String, DataItem> mDataItemMap = new TreeMap<>();
-
-    /**
-     * This list contains the full list of Data Item displayed on the left part of the main Window
-     */
-    static private List<String> mSelectedItemsOnTheLeftList = new ArrayList<>();
-
-    /**
-     * This list contains the list of Data Item displayed on the right part of the main Window that have been
-     * selected. This list is used only to remove the items displayed on the right part of the main window and
-     * that have been selected for deletion
-     */
-    static private List<String> mSelectedItemsOnTheRightList = new ArrayList<>();
-
-    static private JFileChooser mFc;
-
 
     /**
      * Constructor
@@ -54,9 +56,9 @@ public class DataGenerator extends JFrame {
      * Each item is later displayed in the left side of the main window.
      */
     private DataGenerator() {
-        readDataItemConfigurationFile();
+        //readDataItemConfigurationFile();
 
-        setContentDataItemJList(mAllDataItemsJList);
+        //setContentDataItemJList(mAllDataItemsJList);
 
         selectDataItemListener(mAddAllBtn, mAllDataItemsJList, mSelectedDataItemJList);
 
@@ -176,41 +178,6 @@ public class DataGenerator extends JFrame {
     }
 
     /**
-     * Iterate the list of the selected data item displayed in the JTextPane
-     * and for each data item create a file
-     *
-     * @param okBtn reference to the mOkBtn object
-     */
-    private void createDataItemListener(JButton okBtn) {
-        okBtn.addActionListener(actionEvent -> {
-            //Create a Data Item for each element displayed in the JTextPane
-            if (!mSelectedItemsOnTheLeftList.isEmpty()) {
-                //Create a file chooser
-                mFc = new JFileChooser();
-                mFc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int ret = mFc.showSaveDialog(DataGenerator.this);
-                if (ret == JFileChooser.APPROVE_OPTION) {
-                    File selectedPath = mFc.getSelectedFile();
-                    for (String s : mSelectedItemsOnTheLeftList) {
-                        DataItem item = mDataItemMap.get(s);
-                        System.out.println(item.getItemName() + " " + item.getDimesion() + " MB");
-
-                        RandomAccessFile file;
-                        try {
-                            file = new RandomAccessFile(new File(selectedPath + "\\" + item.getItemName()), "rw");
-                            file.setLength((long) (item.getDimesion() * SIZE_MB));
-                            file.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            JOptionPane.showMessageDialog(this, "Data Items have been created!");
-        });
-    }
-
-    /**
      * Method used to remove from the JList on the right part of the main window either the last Data Item inserted
      * or the item selected
      *
@@ -274,7 +241,8 @@ public class DataGenerator extends JFrame {
      * Method used to read the ListDataItem.cnf file
      */
     private static void readDataItemConfigurationFile() {
-        // Fill in a map with data item name from resource file
+        // Fill in a Map with the key equals to the Data Item name and the value equals to a DataItem object
+        // representing the data item read from the resource file
         try (Stream<String> lines = Files.lines(Paths.get("./resources/ListDataItem.cnf"), StandardCharsets.UTF_8)) {
             lines.forEach(line -> {
                 // split the String line (Ex: P4_1A_HR_____:10) into two strings. The first one containing the
@@ -287,12 +255,121 @@ public class DataGenerator extends JFrame {
         }
     }
 
+    /**
+     * Iterate the list of the selected data item displayed in the right JList
+     * and for each Data Item a file is created
+     *
+     * @param okBtn reference to the mOkBtn object
+     */
+    private void createDataItemListener(JButton okBtn) {
+        okBtn.addActionListener(actionEvent -> {
+            //Create a Data Item for each element displayed in the JTextPane
+            if (!mSelectedItemsOnTheLeftList.isEmpty()) {
+                //Create a file chooser
+                mFc = new JFileChooser();
+                mFc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int ret = mFc.showSaveDialog(DataGenerator.this);
+                if (ret == JFileChooser.APPROVE_OPTION) {
+                    File selectedPath = mFc.getSelectedFile();
+                    for (String s : mSelectedItemsOnTheLeftList) {
+                        DataItem item = mDataItemMap.get(s);
+                        System.out.println(item.getItemName() + " " + item.getDimesion() + " MB");
 
+                        RandomAccessFile file;
+                        try {
+                            file = new RandomAccessFile(new File(selectedPath + "\\" + item.getItemName()), "rw");
+                            file.setLength((long) (item.getDimesion() * SIZE_MB));
+                            file.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Data Items have been created!");
+        });
+    }
+
+    /**
+     * This method is used to create a regular menus, submenus
+     *
+     * @param frame reference to JFrame object
+     */
+    private JMenuBar createMenus() {
+        JMenuBar menuBar = new JMenuBar();
+        ImageIcon exitIcon = new ImageIcon("./resources/icons/exit_icon.png");
+        ImageIcon newIcon = new ImageIcon("./resources/icons/new_icon.png");
+        ImageIcon loadIcon = new ImageIcon("./resources/icons/load_icon.png");
+        ImageIcon saveIcon = new ImageIcon("./resources/icons/save_icon.png");
+        ImageIcon editIcon = new ImageIcon("./resources/icons/edit_icon.png");
+
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        JMenuItem newMenuItem = new JMenuItem("New", newIcon);
+        newMenuItem.setMnemonic(KeyEvent.VK_N);
+        newMenuItem.setToolTipText("Create new configuration file");
+
+        JMenuItem loadMenuItem = new JMenuItem("Load", loadIcon);
+        loadMenuItem.setMnemonic(KeyEvent.VK_O);
+        loadMenuItem.setToolTipText("Load a configuration file");
+        loadMenuItem.addActionListener(actionEvent -> {
+            // Fill in a Map with the key equals to the Data Item name and the value equals to a DataItem object
+            // representing the data item read from the resource file
+            try (Stream<String> lines = Files.lines(Paths.get("./resources/ListDataItem.cnf"), StandardCharsets.UTF_8)) {
+                lines.forEach(line -> {
+                    // split the String line (Ex: P4_1A_HR_____:10) into two strings. The first one containing the
+                    // data item name and the second one the dimension
+                    String[] tmp = line.split(":");
+                    mDataItemMap.put(tmp[0], new DataItem(tmp[0], Double.valueOf(tmp[1])));
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            setContentDataItemJList(mAllDataItemsJList);
+        });
+
+        JMenuItem saveMenuItem = new JMenuItem("Save", saveIcon);
+        saveMenuItem.setMnemonic(KeyEvent.VK_S);
+        saveMenuItem.setToolTipText("Save configuration file");
+
+        JMenuItem editMenuItem = new JMenuItem("Edit", editIcon);
+        editMenuItem.setToolTipText("Edit configuration file");
+
+        JMenuItem exitMenuItem = new JMenuItem("Exit", exitIcon);
+        exitMenuItem.setMnemonic(KeyEvent.VK_E);
+        exitMenuItem.setToolTipText("Exit application");
+        exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+        exitMenuItem.addActionListener((event) -> System.exit(0));
+
+        fileMenu.add(newMenuItem);
+        fileMenu.add(loadMenuItem);
+        fileMenu.add(saveMenuItem);
+        fileMenu.add(editMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitMenuItem);
+        menuBar.add(fileMenu);
+
+        return menuBar;
+    }
+
+    /**
+     * Main method
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         JFrame frame = new JFrame("DataGenerator");
-        frame.setContentPane(new DataGenerator().mMainPane);
+
+        DataGenerator dataGenerator = new DataGenerator();
+
+        frame.setContentPane(dataGenerator.mMainPane);
         frame.setPreferredSize(new Dimension(1500, 500));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.setJMenuBar(dataGenerator.createMenus());
+
         frame.pack();
         frame.setVisible(true);
     }

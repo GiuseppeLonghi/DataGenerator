@@ -90,11 +90,14 @@
               <component id="67424" class="javax.swing.JLabel">
                 <constraints border-constraint="North"/>
                 <properties>
-                  <font name="Georgia" size="14" style="1"/>
+                  <font name="Georgia" size="16" style="1"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
                   <text value="Selected Data Items to be generated"/>
                 </properties>
+                <clientProperties>
+                  <html.disable class="java.lang.Boolean" value="true"/>
+                </clientProperties>
               </component>
               <scrollpane id="17c98" binding="mSelectedDataItemScrollJPane">
                 <constraints border-constraint="Center"/>
