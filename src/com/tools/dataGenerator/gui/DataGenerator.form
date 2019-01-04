@@ -12,10 +12,24 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="5d1e6" class="javax.swing.JButton" binding="okBtn">
+          <component id="c6970" class="javax.swing.JButton" binding="mSelectAllBtn">
             <constraints/>
             <properties>
-              <text value="OK"/>
+              <text value="Select All"/>
+            </properties>
+          </component>
+          <component id="8f7c3" class="javax.swing.JButton" binding="mAddAllBtn">
+            <constraints/>
+            <properties>
+              <enabled value="false"/>
+              <hideActionText value="true"/>
+              <text value="Add All"/>
+            </properties>
+          </component>
+          <component id="2cebd" class="javax.swing.JButton" binding="mCancelBtn">
+            <constraints/>
+            <properties>
+              <text value="Cancel"/>
             </properties>
           </component>
           <component id="22766" class="javax.swing.JButton" binding="mRemoveBtn">
@@ -24,10 +38,10 @@
               <text value="Remove"/>
             </properties>
           </component>
-          <component id="2cebd" class="javax.swing.JButton" binding="cancelBtn">
+          <component id="5d1e6" class="javax.swing.JButton" binding="mOkBtn">
             <constraints/>
             <properties>
-              <text value="Cancel"/>
+              <text value="Create Item..."/>
             </properties>
           </component>
         </children>
