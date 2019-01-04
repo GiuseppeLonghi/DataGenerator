@@ -51,34 +51,64 @@
         <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="8f6d">
+          <grid id="2d081" binding="mAllDataItemJPane" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <splitpane position="left"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="3bb24" class="javax.swing.JList" binding="mProductTypesJList">
-                <constraints/>
-                <properties/>
+              <component id="a5a5a" class="javax.swing.JLabel">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <font name="Georgia" size="16" style="1"/>
+                  <horizontalAlignment value="0"/>
+                  <horizontalTextPosition value="0"/>
+                  <text value="All Data Items:"/>
+                </properties>
               </component>
+              <scrollpane id="8f6d" binding="mAllDataItemJScrollPane">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="3bb24" class="javax.swing.JList" binding="mAllDataItemsJList">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
-          </scrollpane>
-          <scrollpane id="17c98">
+          </grid>
+          <grid id="b0573" binding="mSelectedDataItemJPane" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <splitpane position="right"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="a5b4b" class="javax.swing.JTextPane" binding="mSelectedProductTypesTextPane">
-                <constraints/>
+              <component id="67424" class="javax.swing.JLabel">
+                <constraints border-constraint="North"/>
                 <properties>
-                  <editable value="false"/>
+                  <font name="Georgia" size="14" style="1"/>
+                  <horizontalAlignment value="0"/>
+                  <horizontalTextPosition value="0"/>
+                  <text value="Selected Data Items to be generated"/>
                 </properties>
               </component>
+              <scrollpane id="17c98" binding="mSelectedDataItemScrollJPane">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="ab1a1" class="javax.swing.JList" binding="mSelectedDataItemJList">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
-          </scrollpane>
+          </grid>
         </children>
       </splitpane>
     </children>
