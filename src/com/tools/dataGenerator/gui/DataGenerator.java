@@ -16,10 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class DataGenerator extends JFrame {
     private static final int SIZE_MB = 1_000_000;
+
+    private static final String mRegex = "^.*\\:.\\D*.*";
     /**
      * This Map will contain as key the data item name and as value the object representing the data item
      */
@@ -34,7 +37,10 @@ public class DataGenerator extends JFrame {
      * that have been selected for deletion
      */
     static private List<String> mSelectedItemsOnTheRightList = new ArrayList<>();
-    static private JFileChooser mFc;
+    /**
+     * Create a File Chooser
+     */
+    static private JFileChooser mFileChooser = new JFileChooser();
     private JPanel mMainPane;
     private JButton mOkBtn;
     private JButton mCancelBtn;
@@ -56,9 +62,6 @@ public class DataGenerator extends JFrame {
      * Each item is later displayed in the left side of the main window.
      */
     private DataGenerator() {
-        //readDataItemConfigurationFile();
-
-        //setContentDataItemJList(mAllDataItemsJList);
 
         selectDataItemListener(mAddAllBtn, mAllDataItemsJList, mSelectedDataItemJList);
 
@@ -265,12 +268,10 @@ public class DataGenerator extends JFrame {
         okBtn.addActionListener(actionEvent -> {
             //Create a Data Item for each element displayed in the JTextPane
             if (!mSelectedItemsOnTheLeftList.isEmpty()) {
-                //Create a file chooser
-                mFc = new JFileChooser();
-                mFc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int ret = mFc.showSaveDialog(DataGenerator.this);
+                mFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int ret = mFileChooser.showSaveDialog(DataGenerator.this);
                 if (ret == JFileChooser.APPROVE_OPTION) {
-                    File selectedPath = mFc.getSelectedFile();
+                    File selectedPath = mFileChooser.getSelectedFile();
                     for (String s : mSelectedItemsOnTheLeftList) {
                         DataItem item = mDataItemMap.get(s);
                         System.out.println(item.getItemName() + " " + item.getDimesion() + " MB");
@@ -313,22 +314,7 @@ public class DataGenerator extends JFrame {
         JMenuItem loadMenuItem = new JMenuItem("Load", loadIcon);
         loadMenuItem.setMnemonic(KeyEvent.VK_O);
         loadMenuItem.setToolTipText("Load a configuration file");
-        loadMenuItem.addActionListener(actionEvent -> {
-            // Fill in a Map with the key equals to the Data Item name and the value equals to a DataItem object
-            // representing the data item read from the resource file
-            try (Stream<String> lines = Files.lines(Paths.get("./resources/ListDataItem.cnf"), StandardCharsets.UTF_8)) {
-                lines.forEach(line -> {
-                    // split the String line (Ex: P4_1A_HR_____:10) into two strings. The first one containing the
-                    // data item name and the second one the dimension
-                    String[] tmp = line.split(":");
-                    mDataItemMap.put(tmp[0], new DataItem(tmp[0], Double.valueOf(tmp[1])));
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            setContentDataItemJList(mAllDataItemsJList);
-        });
+        loadMenuListener(loadMenuItem, mAllDataItemsJList);
 
         JMenuItem saveMenuItem = new JMenuItem("Save", saveIcon);
         saveMenuItem.setMnemonic(KeyEvent.VK_S);
@@ -355,21 +341,79 @@ public class DataGenerator extends JFrame {
     }
 
     /**
+     * Method defines a listener for the Load sub-menu
+     * Through this sub-menu it is possible to load whatever file
+     * containing list of data item to generate
+     *
+     * @param loadMenuItem
+     */
+    private void loadMenuListener(JMenuItem loadMenuItem, JList allDataItemsJList) {
+        loadMenuItem.addActionListener(actionEvent -> {
+
+            List<String> wrongItems = new ArrayList<>();
+
+            //Clear the Data Items map just to be sure that the previous elements are removed
+            mDataItemMap.clear();
+
+            //Check whether the JList on the left contains elements and in case delete them
+            if (((ListModel) allDataItemsJList.getModel()).getSize() != 0) {
+                allDataItemsJList.setListData(new Object[0]);
+            }
+
+            //Open the OpenDialog to choose the new configuration file
+            int ret = mFileChooser.showOpenDialog(DataGenerator.this);
+            if (ret == JFileChooser.APPROVE_OPTION) {
+                File file = mFileChooser.getSelectedFile();
+
+                Pattern pattern = Pattern.compile(mRegex);
+
+                // Fill in a Map with the key equals to the Data Item name and the value equals to a DataItem object
+                // representing the data item read from the resource file
+                try (Stream<String> lines = Files.lines(Paths.get(file.toURI()))) {
+                    lines.forEach(line -> {
+                        if (pattern.matcher(line).find()) {
+                            // split the String line (Ex: P4_1A_HR_____:10) into two strings. The first one containing the
+                            // data item name and the second one the dimension
+                            String[] tmp = line.split(":");
+                            mDataItemMap.put(tmp[0], new DataItem(tmp[0], Double.valueOf(tmp[1])));
+                        } else {
+                            wrongItems.add(line);
+                            System.out.println("WRONG FORMAT");
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                setContentDataItemJList(mAllDataItemsJList);
+
+                if (!wrongItems.isEmpty()) {
+                    String message = "";
+                    for (String str : wrongItems) {
+                        message += "\n" + str;
+                    }
+
+                    JOptionPane.showMessageDialog(this,
+                            "Attention the following entry/ies in the loaded file is/are not following the right entry convention! \n" + message,
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                }
+
+            }
+        });
+    }
+
+    /**
      * Main method
      *
      * @param args
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame("DataGenerator");
-
         DataGenerator dataGenerator = new DataGenerator();
-
         frame.setContentPane(dataGenerator.mMainPane);
-        frame.setPreferredSize(new Dimension(1500, 500));
+        frame.setPreferredSize(new Dimension(1200, 500));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         frame.setJMenuBar(dataGenerator.createMenus());
-
         frame.pack();
         frame.setVisible(true);
     }
