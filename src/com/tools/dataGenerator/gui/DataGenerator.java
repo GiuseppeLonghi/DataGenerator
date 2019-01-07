@@ -50,11 +50,10 @@ public class DataGenerator extends JFrame {
     private JPanel mCombinedJPane;
     private JScrollPane mAllDataItemJScrollPane;
     private JScrollPane mSelectedDataItemScrollJPane;
-    private JEditorPane mJEditorPane;
+    private JEditorPane mJeditorPane;
     private JPanel mSelectedDataItemJPane;
-    private JPanel mEditorJPane;
     private JButton mSaveEditorBtn;
-    private JButton mCancelEditBtn;
+    private JButton mCancelEditorBtn;
 
 
     /**
@@ -79,9 +78,42 @@ public class DataGenerator extends JFrame {
 
         cancelAllDataItemListener(mCancelBtn, mAllDataItemsJList, mAddAllBtn, mSelectedDataItemJList);
 
-        mJEditorPane.setVisible(false);
+        mJeditorPane.setVisible(false);
+
+        saveEditorContentListener();
+
+        cancelEditorContentListener();
 
 
+    }
+
+    /**
+     * Method used to clear the Editor
+     */
+    private void cancelEditorContentListener() {
+        mCancelEditorBtn.addActionListener(actionEvent -> {
+            mJeditorPane.setText("");
+        });
+    }
+
+    /**
+     * Method used to save the editor content to a file
+     */
+    private void saveEditorContentListener() {
+        mSaveEditorBtn.addActionListener(actionEvent -> {
+            mFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int ret = mFileChooser.showSaveDialog(DataGenerator.this);
+            if (ret == JFileChooser.APPROVE_OPTION) {
+                File selectedPath = mFileChooser.getSelectedFile();
+
+                try {
+                    Files.write(selectedPath.toPath(), mJeditorPane.getText().getBytes());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -303,6 +335,7 @@ public class DataGenerator extends JFrame {
      * @param frame reference to JFrame object
      */
     private JMenuBar createMenus() {
+        //Menu Bar
         JMenuBar menuBar = new JMenuBar();
         ImageIcon exitIcon = new ImageIcon("./resources/icons/exit_icon.png");
         ImageIcon newIcon = new ImageIcon("./resources/icons/new_icon.png");
@@ -310,38 +343,51 @@ public class DataGenerator extends JFrame {
         ImageIcon saveIcon = new ImageIcon("./resources/icons/save_icon.png");
         ImageIcon editIcon = new ImageIcon("./resources/icons/edit_icon.png");
 
+        //File menu
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
+        //New menu item
         JMenuItem newMenuItem = new JMenuItem("New", newIcon);
         newMenuItem.setMnemonic(KeyEvent.VK_N);
         newMenuItem.setToolTipText("Create new configuration file");
+        newMenuItemListener(newMenuItem, mJeditorPane, mSaveEditorBtn, mCancelEditorBtn);
 
+        //Load menu item
         JMenuItem loadMenuItem = new JMenuItem("Load", loadIcon);
         loadMenuItem.setMnemonic(KeyEvent.VK_O);
         loadMenuItem.setToolTipText("Load a configuration file");
         loadMenuListener(loadMenuItem, mAllDataItemsJList);
 
+        //Save menu item
         JMenuItem saveMenuItem = new JMenuItem("Save", saveIcon);
         saveMenuItem.setMnemonic(KeyEvent.VK_S);
         saveMenuItem.setToolTipText("Save configuration file");
+        saveMenuItemListener(saveMenuItem);
 
+        //Edit menu item
         JMenuItem editMenuItem = new JMenuItem("Edit", editIcon);
         editMenuItem.setToolTipText("Edit configuration file");
+        editMenuItem.setEnabled(false);
+        editMenuItemChangeListener(editMenuItem, mAllDataItemsJList, mJeditorPane);
+        editMenuItemListener(editMenuItem, mAllDataItemsJList, mJeditorPane);
 
+        //Exit menu item
         JMenuItem exitMenuItem = new JMenuItem("Exit", exitIcon);
         exitMenuItem.setMnemonic(KeyEvent.VK_E);
         exitMenuItem.setToolTipText("Exit application");
         exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         exitMenuItem.addActionListener((event) -> System.exit(0));
 
+        //View menu item
         JMenu viewMenu = new JMenu("View");
         viewMenu.setMnemonic(KeyEvent.VK_K);
 
+        //Enable configuration editor item
         JCheckBoxMenuItem enableJEditorPaneMenutItem = new JCheckBoxMenuItem("Enable Configuration Editor");
         enableJEditorPaneMenutItem.setMnemonic(KeyEvent.VK_I);
         enableJEditorPaneMenutItem.setSelected(false);
-        setJeditorPaneListener(enableJEditorPaneMenutItem, mJEditorPane, mSaveEditorBtn, mCancelEditBtn);
+        setJeditorPaneListener(enableJEditorPaneMenutItem, mJeditorPane, mSaveEditorBtn, mCancelEditorBtn);
         viewMenu.add(enableJEditorPaneMenutItem);
 
         fileMenu.add(newMenuItem);
@@ -354,6 +400,83 @@ public class DataGenerator extends JFrame {
         menuBar.add(viewMenu);
 
         return menuBar;
+    }
+
+    /**
+     * Method used to set the Action Listener to the editMenuItem object
+     *
+     * @param editMenuItem      reference to the editMenuItem object
+     * @param allDataItemsJList reference to the mAllDataItemJList object
+     * @param jEditorPane       reference to the mJeditorPane object
+     */
+    private static void editMenuItemListener(JMenuItem editMenuItem, JList allDataItemsJList, JEditorPane jEditorPane) {
+        editMenuItem.addActionListener(actionEvent -> {
+            for (int i = 0; i < allDataItemsJList.getModel().getSize(); i++) {
+                System.out.println("CHECK: " + allDataItemsJList.getModel().getElementAt(i).toString());
+                String str = jEditorPane.getText();
+                str += allDataItemsJList.getModel().getElementAt(i).toString() + "\n";
+                jEditorPane.setText(str);
+            }
+        });
+    }
+
+    /**
+     * Method used to set a Property Change Listener to the editMenuItem
+     *
+     * @param editMenuItem      reference to editMenuItem object
+     * @param allDataItemsJList reference to the mAllDataItemJList object
+     * @param jEditorPane       reference to the mJeditorPane object
+     */
+    private static void editMenuItemChangeListener(JMenuItem editMenuItem, JList allDataItemsJList, JEditorPane jEditorPane) {
+        editMenuItem.addPropertyChangeListener(propertyChangeEvent -> {
+            if (allDataItemsJList.getModel().getSize() != 0 && jEditorPane.isVisible()) {
+                editMenuItem.setEnabled(true);
+            }
+            if (!jEditorPane.isVisible()) {
+                editMenuItem.setEnabled(false);
+            }
+        });
+    }
+
+    /**
+     * Method used to set the Listener to the saveManuItem object
+     *
+     * @param saveMenuItem reference to the saveMenuItem object
+     */
+    private void saveMenuItemListener(JMenuItem saveMenuItem) {
+        saveMenuItem.addActionListener(actionEvent -> {
+
+            if (mJeditorPane.isVisible()) {
+                mFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int ret = mFileChooser.showSaveDialog(DataGenerator.this);
+                if (ret == JFileChooser.APPROVE_OPTION) {
+                    File selectedPath = mFileChooser.getSelectedFile();
+
+                    try {
+                        Files.write(selectedPath.toPath(), mJeditorPane.getText().getBytes());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Method used to set the Listener for the newMenuItem
+     *
+     * @param newMenuItem     reference to the newMenuItem object
+     * @param jEditorPane     reference to the mJeditorPane object
+     * @param saveEditorBtn   reference to the mSaveEditorBtn button object
+     * @param cancelEditorBtn reference to the mCancelEditorBtn
+     */
+    private static void newMenuItemListener(JMenuItem newMenuItem, JEditorPane jEditorPane, JButton saveEditorBtn, JButton cancelEditorBtn) {
+        newMenuItem.addActionListener(actionEvent -> {
+            jEditorPane.setVisible(true);
+            saveEditorBtn.setEnabled(true);
+            cancelEditorBtn.setEnabled(true);
+        });
     }
 
     /**
@@ -427,6 +550,7 @@ public class DataGenerator extends JFrame {
                 }
 
                 setContentDataItemJList(mAllDataItemsJList);
+
 
                 if (!wrongItems.isEmpty()) {
                     String message = "";

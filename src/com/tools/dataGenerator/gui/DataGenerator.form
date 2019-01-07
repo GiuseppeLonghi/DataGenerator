@@ -44,22 +44,6 @@
               <text value="Create Item..."/>
             </properties>
           </component>
-          <component id="b8652" class="javax.swing.JButton" binding="mCancelEditBtn">
-            <constraints/>
-            <properties>
-              <enabled value="false"/>
-              <text value="Cancel"/>
-              <toolTipText value="Cancel content Editor"/>
-            </properties>
-          </component>
-          <component id="dbba2" class="javax.swing.JButton" binding="mSaveEditorBtn">
-            <constraints/>
-            <properties>
-              <enabled value="false"/>
-              <text value="Save..."/>
-              <toolTipText value="Save content editor"/>
-            </properties>
-          </component>
         </children>
       </grid>
       <splitpane id="38688">
@@ -108,7 +92,9 @@
               <splitpane id="7075d">
                 <constraints border-constraint="Center"/>
                 <properties>
-                  <dividerLocation value="246"/>
+                  <dividerLocation value="590"/>
+                  <inheritsPopupMenu value="true"/>
+                  <lastDividerLocation value="571"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -151,29 +137,81 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="d0249" class="javax.swing.JLabel">
+                      <grid id="7d626" layout-manager="BorderLayout" hgap="0" vgap="0">
                         <constraints border-constraint="North"/>
-                        <properties>
-                          <font name="Georgia" size="12" style="1"/>
-                          <text value="Editor"/>
-                        </properties>
-                      </component>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="d0249" class="javax.swing.JLabel">
+                            <constraints border-constraint="Center"/>
+                            <properties>
+                              <font name="Georgia" size="12" style="1"/>
+                              <horizontalAlignment value="0"/>
+                              <text value="Editor"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <grid id="1ad58" layout-manager="GridBagLayout">
+                        <constraints border-constraint="East"/>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="dbba2" class="javax.swing.JButton" binding="mSaveEditorBtn">
+                            <constraints>
+                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                              <gridbag weightx="0.0" weighty="0.0"/>
+                            </constraints>
+                            <properties>
+                              <enabled value="false"/>
+                              <icon value="icons/save_icon.png"/>
+                              <maximumSize width="25" height="25"/>
+                              <minimumSize width="25" height="25"/>
+                              <opaque value="false"/>
+                              <preferredSize width="25" height="25"/>
+                              <requestFocusEnabled value="false"/>
+                              <text value=""/>
+                              <toolTipText value="Save content editor"/>
+                            </properties>
+                          </component>
+                          <component id="b8652" class="javax.swing.JButton" binding="mCancelEditorBtn">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                              <gridbag weightx="0.0" weighty="0.0"/>
+                            </constraints>
+                            <properties>
+                              <enabled value="false"/>
+                              <horizontalAlignment value="0"/>
+                              <icon value="icons/cancel_icon.png"/>
+                              <maximumSize width="25" height="25"/>
+                              <minimumSize width="25" height="25"/>
+                              <opaque value="false"/>
+                              <preferredSize width="25" height="25"/>
+                              <text value=""/>
+                              <toolTipText value="Cancel content Editor"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
                       <scrollpane id="6c39d">
                         <constraints border-constraint="Center"/>
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <grid id="e2d1f" binding="mEditorJPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+                          <grid id="e2d1f" layout-manager="BorderLayout" hgap="0" vgap="0">
                             <constraints/>
                             <properties/>
                             <border type="none"/>
                             <children>
-                              <component id="4bb18" class="javax.swing.JEditorPane" binding="mJEditorPane">
+                              <grid id="70678" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                                <constraints border-constraint="South"/>
+                                <properties/>
+                                <border type="none"/>
+                                <children/>
+                              </grid>
+                              <component id="10f46" class="javax.swing.JEditorPane" binding="mJeditorPane">
                                 <constraints border-constraint="Center"/>
-                                <properties>
-                                  <dragEnabled value="false"/>
-                                  <preferredSize width="0" height="0"/>
-                                </properties>
+                                <properties/>
                               </component>
                             </children>
                           </grid>
