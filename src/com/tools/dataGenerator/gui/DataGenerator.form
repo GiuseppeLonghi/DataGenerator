@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.tools.dataGenerator.gui.DataGenerator">
   <grid id="27dc6" binding="mMainPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="33" y="20" width="646" height="648"/>
+      <xy x="33" y="20" width="1091" height="648"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -44,11 +44,29 @@
               <text value="Create Item..."/>
             </properties>
           </component>
+          <component id="b8652" class="javax.swing.JButton" binding="mCancelEditBtn">
+            <constraints/>
+            <properties>
+              <enabled value="false"/>
+              <text value="Cancel"/>
+              <toolTipText value="Cancel content Editor"/>
+            </properties>
+          </component>
+          <component id="dbba2" class="javax.swing.JButton" binding="mSaveEditorBtn">
+            <constraints/>
+            <properties>
+              <enabled value="false"/>
+              <text value="Save..."/>
+              <toolTipText value="Save content editor"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <splitpane id="38688">
         <constraints border-constraint="Center"/>
-        <properties/>
+        <properties>
+          <dividerLocation value="500"/>
+        </properties>
         <border type="none"/>
         <children>
           <grid id="2d081" binding="mAllDataItemJPane" layout-manager="BorderLayout" hgap="0" vgap="0">
@@ -61,7 +79,7 @@
               <component id="a5a5a" class="javax.swing.JLabel">
                 <constraints border-constraint="North"/>
                 <properties>
-                  <font name="Georgia" size="16" style="1"/>
+                  <font name="Georgia" size="12" style="1"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
                   <text value="All Data Items:"/>
@@ -80,36 +98,91 @@
               </scrollpane>
             </children>
           </grid>
-          <grid id="b0573" binding="mSelectedDataItemJPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="b0573" binding="mCombinedJPane" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <splitpane position="right"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="67424" class="javax.swing.JLabel">
-                <constraints border-constraint="North"/>
-                <properties>
-                  <font name="Georgia" size="16" style="1"/>
-                  <horizontalAlignment value="0"/>
-                  <horizontalTextPosition value="0"/>
-                  <text value="Selected Data Items to be generated"/>
-                </properties>
-                <clientProperties>
-                  <html.disable class="java.lang.Boolean" value="true"/>
-                </clientProperties>
-              </component>
-              <scrollpane id="17c98" binding="mSelectedDataItemScrollJPane">
+              <splitpane id="7075d">
                 <constraints border-constraint="Center"/>
-                <properties/>
+                <properties>
+                  <dividerLocation value="246"/>
+                </properties>
                 <border type="none"/>
                 <children>
-                  <component id="ab1a1" class="javax.swing.JList" binding="mSelectedDataItemJList">
-                    <constraints/>
+                  <grid id="b95e4" binding="mSelectedDataItemJPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints>
+                      <splitpane position="left"/>
+                    </constraints>
                     <properties/>
-                  </component>
+                    <border type="none"/>
+                    <children>
+                      <component id="67424" class="javax.swing.JLabel">
+                        <constraints border-constraint="North"/>
+                        <properties>
+                          <font name="Georgia" size="12" style="1"/>
+                          <horizontalAlignment value="0"/>
+                          <horizontalTextPosition value="0"/>
+                          <text value="Selected Data Items to be generated"/>
+                        </properties>
+                        <clientProperties>
+                          <html.disable class="java.lang.Boolean" value="true"/>
+                        </clientProperties>
+                      </component>
+                      <scrollpane id="17c98" binding="mSelectedDataItemScrollJPane">
+                        <constraints border-constraint="Center"/>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="ab1a1" class="javax.swing.JList" binding="mSelectedDataItemJList">
+                            <constraints/>
+                            <properties/>
+                          </component>
+                        </children>
+                      </scrollpane>
+                    </children>
+                  </grid>
+                  <grid id="a6905" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints>
+                      <splitpane position="right"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="d0249" class="javax.swing.JLabel">
+                        <constraints border-constraint="North"/>
+                        <properties>
+                          <font name="Georgia" size="12" style="1"/>
+                          <text value="Editor"/>
+                        </properties>
+                      </component>
+                      <scrollpane id="6c39d">
+                        <constraints border-constraint="Center"/>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <grid id="e2d1f" binding="mEditorJPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+                            <constraints/>
+                            <properties/>
+                            <border type="none"/>
+                            <children>
+                              <component id="4bb18" class="javax.swing.JEditorPane" binding="mJEditorPane">
+                                <constraints border-constraint="Center"/>
+                                <properties>
+                                  <dragEnabled value="false"/>
+                                  <preferredSize width="0" height="0"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </grid>
+                        </children>
+                      </scrollpane>
+                    </children>
+                  </grid>
                 </children>
-              </scrollpane>
+              </splitpane>
             </children>
           </grid>
         </children>

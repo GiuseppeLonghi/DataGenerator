@@ -2,10 +2,7 @@ package com.tools.dataGenerator.gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -50,9 +47,14 @@ public class DataGenerator extends JFrame {
     private JList mAllDataItemsJList;
     private JList mSelectedDataItemJList;
     private JPanel mAllDataItemJPane;
-    private JPanel mSelectedDataItemJPane;
+    private JPanel mCombinedJPane;
     private JScrollPane mAllDataItemJScrollPane;
     private JScrollPane mSelectedDataItemScrollJPane;
+    private JEditorPane mJEditorPane;
+    private JPanel mSelectedDataItemJPane;
+    private JPanel mEditorJPane;
+    private JButton mSaveEditorBtn;
+    private JButton mCancelEditBtn;
 
 
     /**
@@ -76,6 +78,10 @@ public class DataGenerator extends JFrame {
         addAllDataItemListener(mAddAllBtn, mSelectedDataItemJList);
 
         cancelAllDataItemListener(mCancelBtn, mAllDataItemsJList, mAddAllBtn, mSelectedDataItemJList);
+
+        mJEditorPane.setVisible(false);
+
+
     }
 
     /**
@@ -329,6 +335,15 @@ public class DataGenerator extends JFrame {
         exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         exitMenuItem.addActionListener((event) -> System.exit(0));
 
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setMnemonic(KeyEvent.VK_K);
+
+        JCheckBoxMenuItem enableJEditorPaneMenutItem = new JCheckBoxMenuItem("Enable Configuration Editor");
+        enableJEditorPaneMenutItem.setMnemonic(KeyEvent.VK_I);
+        enableJEditorPaneMenutItem.setSelected(false);
+        setJeditorPaneListener(enableJEditorPaneMenutItem, mJEditorPane, mSaveEditorBtn, mCancelEditBtn);
+        viewMenu.add(enableJEditorPaneMenutItem);
+
         fileMenu.add(newMenuItem);
         fileMenu.add(loadMenuItem);
         fileMenu.add(saveMenuItem);
@@ -336,8 +351,34 @@ public class DataGenerator extends JFrame {
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
+        menuBar.add(viewMenu);
 
         return menuBar;
+    }
+
+    /**
+     * Method used to define a item listener for the checkbox sub-menu
+     *
+     * @param enableJEditorPaneMenutItem reference to the JCheckBocMenutItem
+     * @param jEditorPane                reference to the mJeditorPane object
+     * @param saveBtn                    reference to the save button object
+     * @param cancelBtn                  reference to the cancel button object
+     */
+    private static void setJeditorPaneListener(JCheckBoxMenuItem enableJEditorPaneMenutItem, JEditorPane jEditorPane,
+                                               JButton saveBtn, JButton cancelBtn) {
+        enableJEditorPaneMenutItem.addItemListener(event -> {
+            if (event.getStateChange() == ItemEvent.SELECTED) {
+                jEditorPane.setVisible(true);
+                jEditorPane.setPreferredSize(new Dimension(400, 500));
+                saveBtn.setEnabled(true);
+                cancelBtn.setEnabled(true);
+
+            } else {
+                jEditorPane.setVisible(false);
+                saveBtn.setEnabled(false);
+                cancelBtn.setEnabled(false);
+            }
+        });
     }
 
     /**
@@ -394,7 +435,7 @@ public class DataGenerator extends JFrame {
                     }
 
                     JOptionPane.showMessageDialog(this,
-                            "Attention the following entry/ies in the loaded file is/are not following the right entry convention! \n" + message,
+                            "Wrong entry/ies in in the loaded file \n" + message,
                             "Warning", JOptionPane.WARNING_MESSAGE);
                 }
 
