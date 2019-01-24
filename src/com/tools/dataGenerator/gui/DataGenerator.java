@@ -3,9 +3,7 @@ package com.tools.dataGenerator.gui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,6 +13,11 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import java.util.zip.GZIPOutputStream;
+
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.utils.IOUtils;
 
 public class DataGenerator extends JFrame {
     private static final int SIZE_MB = 1_000_000;
@@ -304,12 +307,14 @@ public class DataGenerator extends JFrame {
      */
     private void createDataItemListener(JButton okBtn) {
         okBtn.addActionListener(actionEvent -> {
+            File selectedPath = null;
+
             //Create a Data Item for each element displayed in the JTextPane
             if (!mSelectedItemsOnTheLeftList.isEmpty()) {
                 mFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 int ret = mFileChooser.showSaveDialog(DataGenerator.this);
                 if (ret == JFileChooser.APPROVE_OPTION) {
-                    File selectedPath = mFileChooser.getSelectedFile();
+                    selectedPath = mFileChooser.getSelectedFile();
                     for (String s : mSelectedItemsOnTheLeftList) {
                         DataItem item = mDataItemMap.get(s);
                         System.out.println(item.getItemName() + " " + item.getDimesion() + " MB");
@@ -325,8 +330,61 @@ public class DataGenerator extends JFrame {
                     }
                 }
             }
+
+            // Commented out bacause method does not work properly
+            //createTarFile(selectedPath);
+
             JOptionPane.showMessageDialog(this, "Data Items have been created!");
         });
+    }
+
+    /**
+     * This method is used to creata a tar.gz file containing the generated files
+     */
+    private void createTarFile(File source) {
+        TarArchiveOutputStream tarOs = null;
+        try {
+            FileOutputStream fos = new FileOutputStream(source.toString().concat("/testDataSet.tar.gz"));
+            GZIPOutputStream gos = new GZIPOutputStream(new BufferedOutputStream(fos));
+            tarOs = new TarArchiveOutputStream(gos);
+            tarOs.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+            File[] fileNames = source.listFiles();
+            for (File file : fileNames) {
+                addFilesToTarGZ(file.getAbsolutePath(), file, tarOs);
+            }
+        }
+        catch(IOException e) {
+                e.printStackTrace();
+        }
+        finally {
+            try {
+                tarOs.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void addFilesToTarGZ(String source, File file, TarArchiveOutputStream tos)
+            throws IOException
+    {
+        tos.putArchiveEntry(new TarArchiveEntry(file, source));
+        if(file.isFile()) {
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            //Write content of the file
+            IOUtils.copy(bis, tos);
+            tos.closeArchiveEntry();
+            fis.close();
+        }
+        else if(file.isDirectory()) {
+            // not copy any content since it is a directory. Close the outputstreat
+            tos.closeArchiveEntry();
+            for(File newfile : file.listFiles()) {
+                addFilesToTarGZ(newfile.getAbsolutePath(), newfile, tos);
+            }
+        }
     }
 
     /**

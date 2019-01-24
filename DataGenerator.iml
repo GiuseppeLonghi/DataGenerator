@@ -19,5 +19,20 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Downloads/commons-compress-1.18" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="file://$USER_HOME$/Downloads/commons-compress-1.18/apidocs" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="file://$USER_HOME$/Downloads/commons-compress-1.18" />
+        </SOURCES>
+        <jarDirectory url="file://$USER_HOME$/Downloads/commons-compress-1.18" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/Downloads/commons-compress-1.18" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>
